@@ -1,0 +1,10 @@
+# The generator tool is kept here for local convenience but is not part of this
+# repo's tracked content — only mATLAS-presets/ (the reviewed preset library) is.
+AXIOM_model_parser/
+
+# OS / editor cruft
+.DS_Store
+__pycache__/
+*.pyc
+.idea/
+.vscode/
