@@ -70,7 +70,7 @@ common:
   activity_kind:   const(observation)
   context.antenna: format("{field(GlobalCellID)}")
 
-assertions:
+observations:
   - position:
       latitude:                       field(Latitude)
       longitude:                      field(Longitude)

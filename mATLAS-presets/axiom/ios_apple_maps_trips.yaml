@@ -44,7 +44,7 @@ common:
 
 # Searches, not observed travel: origin/destination are referenced places and the
 # Start/End are the planned (intended) trip times; Record is the DB write time.
-assertions:
+observations:
   - position:
       latitude:        'field("Origin Latitude")'
       longitude:       'field("Origin Longitude")'

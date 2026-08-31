@@ -46,8 +46,8 @@ common:
   raw_position:    field(Address)
 
 # One source row -> the visit interval AND the record-creation instant. The spatial
-# fields are shared, so this is two assertions over the same position.
-assertions:
+# fields are shared, so this is two observations over the same position.
+observations:
   - position:
       latitude:              field(Latitude)
       longitude:             field(Longitude)

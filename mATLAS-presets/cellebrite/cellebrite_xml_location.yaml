@@ -50,7 +50,7 @@ common:
   raw_source_path: field(source_path)        # on-device source file, joined from extraInfos
   deleted:         { from: field(deleted_state), pipe: "lookup(recovery, on_unknown=null)" }
 
-assertions:
+observations:
   - position:
       latitude:              field(Position.Latitude)         # required
       longitude:             field(Position.Longitude)        # required

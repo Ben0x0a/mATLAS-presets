@@ -47,7 +47,7 @@ common:
   raw_source_path: field(Source)
   deleted: { from: 'field("Recovery method")', pipe: "lookup(recovery, on_unknown=null)" }
 
-assertions:
+observations:
   - position:
       latitude:              field(Latitude)
       longitude:             field(Longitude)

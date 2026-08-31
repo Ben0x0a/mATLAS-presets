@@ -42,7 +42,7 @@ common:
   raw_source_path: field(source_path)
   deleted:         { from: field(deleted_state), pipe: "lookup(recovery, on_unknown=null)" }
 
-assertions:
+observations:
   # A network's geolocation is often absent (lat/lon null) — the row is still a temporal
   # observation of the device seeing that SSID/BSSID.
   - position:

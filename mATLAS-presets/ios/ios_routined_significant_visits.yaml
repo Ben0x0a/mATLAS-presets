@@ -45,7 +45,7 @@ common:
   position_source: const(significant_location)
   raw_source_path: preset(path)   # device db path; input_record_id defaults to <table>#<ordinal>
 
-assertions:
+observations:
   - position:
       latitude:              field(ZLOCATIONLATITUDE)
       longitude:             field(ZLOCATIONLONGITUDE)

@@ -45,7 +45,7 @@ common:
   position_source: const(GNSS)
   raw_source_path: preset(path)   # device db path; input_record_id defaults to ZRTCLLOCATIONMO#<ordinal>
 
-assertions:
+observations:
   - position:
       latitude:                       field(ZLATITUDE)
       longitude:                      field(ZLONGITUDE)

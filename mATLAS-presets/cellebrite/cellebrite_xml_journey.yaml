@@ -44,9 +44,9 @@ common:
   raw_source_path: field(source_path)
   deleted:         { from: field(deleted_state), pipe: "lookup(recovery, on_unknown=null)" }
 
-# A Journey fans out to two assertions — origin at StartTime and destination at EndTime —
+# A Journey fans out to two observations — origin at StartTime and destination at EndTime —
 # so each trip yields two output rows sharing the Journey's source_record_uid.
-assertions:
+observations:
   - position:
       latitude:  field(FromPoint.Position.Latitude)
       longitude: field(FromPoint.Position.Longitude)
