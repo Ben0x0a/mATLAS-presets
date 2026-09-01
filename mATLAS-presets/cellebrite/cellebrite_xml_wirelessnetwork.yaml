@@ -54,6 +54,6 @@ observations:
       instant: field(TimeStamp)
       format:  iso8601
     links:
-      entity_position:  at
-      entity_time:      observed_at
-      spatial_temporal: instant
+      entity:   self
+      spatial:  at
+      temporal: once

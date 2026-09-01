@@ -76,10 +76,13 @@ observations:
       longitude:                      field(Longitude)
       spatial_referential:            const(epsg:4326)
       beam_azimuth_deg:               { from: field(Beam), unit: deg }
-      # A zero-duration event happened at an instant; anything else spans the call. Written as
-      # the full column name because the short `links:` block takes bare enum tokens only.
-      spatial_temporal_link: if field(Duration) == 0 then const(instant)
-                             else const(once_during_interval)
+      # A zero-duration event is a single point in the interval; anything else was connected
+      # throughout the call. `instant` is no longer an occupancy member — an instant is the
+      # degenerate interval where "always" and "at some point" coincide — so both branches
+      # are honest quantifiers. Written as the full column name because the short `links:`
+      # block takes bare enum tokens only.
+      occupancy: if field(Duration) == 0 then const(once)
+                 else const(continuous)
     time:
       interval:
         lower:        field(TimeStamp)
@@ -88,8 +91,6 @@ observations:
         duration_sec: { from: field(Duration), unit: s }
       format:              "%Y-%m-%d %H:%M:%S"
       zone:                const(Europe/Zurich)
-      temporal_role_lower: const(start)
-      temporal_role_upper: const(end)
     links:
-      entity_position:  within_range_of
-      entity_time:      recorded_at
+      entity:   served_by
+      spatial:  near

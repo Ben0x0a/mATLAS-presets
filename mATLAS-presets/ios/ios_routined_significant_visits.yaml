@@ -53,7 +53,6 @@ observations:
       altitude_m:            { from: field(ZLOCATIONALTITUDE), unit: m }
       horizontal_accuracy_m: { from: field(ZLOCATIONHORIZONTALUNCERTAINTY), unit: m }
       vertical_accuracy_m:   { from: field(ZLOCATIONVERTICALUNCERTAINTY), unit: m }
-      position_type:         const(visit)
     time:
       interval:                      # the visit dwell window (Cocoa epoch -> us)
         lower: field(ZENTRYDATE)
@@ -61,6 +60,6 @@ observations:
       epoch: cocoa
       zone:  const(UTC)
     links:
-      entity_position:  at
-      entity_time:      observed_at
-      spatial_temporal: continuous_during_interval
+      entity:   self
+      spatial:  at
+      temporal: continuous

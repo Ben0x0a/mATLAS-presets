@@ -50,38 +50,35 @@ observations:
       longitude:       'field("Origin Longitude")'
       spatial_referential: const(epsg:4326)   # the datum for the coordinates above
       raw_position:    'field("Origin Address")'
-      position_type:   const(origin)
     time:
       instant: 'field("Start Date/Time - * (dd.MM.yyyy)")'
       format:  "%d.%m.%Y %H:%M:%S.%f"
       zone:    { from: 'header("Start Date/Time - * (dd.MM.yyyy)")', pipe: "regex(tz, group=z)" }
     links:
-      entity_position:  references
-      entity_time:      intended_for
-      spatial_temporal: instant
+      entity:   searched_for
+      spatial:  references
+      temporal: once
 
   - position:
       latitude:        'field("Destination Latitude")'
       longitude:       'field("Destination Longitude")'
       spatial_referential: const(epsg:4326)   # the datum for the coordinates above
       raw_position:    'field("Destination Address")'
-      position_type:   const(destination)
     time:
       instant: 'field("End Date/Time - * (dd.MM.yyyy)")'
       format:  "%d.%m.%Y %H:%M:%S.%f"
       zone:    { from: 'header("End Date/Time - * (dd.MM.yyyy)")', pipe: "regex(tz, group=z)" }
     links:
-      entity_position:  references
-      entity_time:      intended_for
-      spatial_temporal: instant
+      entity:   searched_for
+      spatial:  references
+      temporal: once
 
   - position:
-      position_type: const(record)
     time:
       instant: 'field("Record Date/Time - * (dd.MM.yyyy)")'
       format:  "%d.%m.%Y %H:%M:%S.%f"
       zone:    { from: 'header("Record Date/Time - * (dd.MM.yyyy)")', pipe: "regex(tz, group=z)" }
     links:
-      entity_position:  unknown
-      entity_time:      recorded_at
-      spatial_temporal: instant
+      entity:   unknown
+      spatial:  unknown
+      temporal: once

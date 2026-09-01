@@ -59,9 +59,9 @@ observations:
         upper: 'field("Vicinity Exit Date/Time")'
       format: "%d.%m.%Y %H:%M:%S.%f"
     links:
-      entity_position:  at
-      entity_time:      observed_at
-      spatial_temporal: continuous_during_interval
+      entity:   self
+      spatial:  at
+      temporal: continuous
 
   - position:
       latitude:              field(Latitude)
@@ -73,6 +73,6 @@ observations:
       format:  "%d.%m.%Y %H:%M:%S.%f"
       zone:    { from: 'header("Created Date/Time - * (dd.MM.yyyy)")', pipe: "regex(tz, group=z)" }
     links:
-      entity_position:  at
-      entity_time:      recorded_at
-      spatial_temporal: instant
+      entity:   self
+      spatial:  at
+      temporal: once

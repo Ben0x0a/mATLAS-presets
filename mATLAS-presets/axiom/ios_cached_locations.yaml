@@ -64,6 +64,6 @@ observations:
       format:  "%d.%m.%Y %H:%M:%S.%f"
       zone:    { from: 'header("Timestamp Date/Time - * (dd.MM.yyyy)")', pipe: "regex(tz, group=z)" }
     links:
-      entity_position:  at
-      entity_time:      observed_at
-      spatial_temporal: instant
+      entity:   self
+      spatial:  at
+      temporal: once

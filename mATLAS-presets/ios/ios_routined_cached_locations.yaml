@@ -61,6 +61,6 @@ observations:
       epoch:   cocoa
       zone:    const(UTC)
     links:
-      entity_position:  at
-      entity_time:      observed_at
-      spatial_temporal: instant
+      entity:   self
+      spatial:  at
+      temporal: once
