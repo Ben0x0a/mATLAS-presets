@@ -7,9 +7,11 @@ sources, corrected field mappings, new tools) and are not tied to an app release
 ## What's in here
 
 - **[`mATLAS-presets/`](mATLAS-presets)** — the actual preset library (the only folder
-  tracked by this repo's git history), one YAML file per source, grouped by
-  tool/platform (`axiom/`, `cellebrite/`, `ios/`, `CDR/`, …). This is the folder you
-  point the mATLAS app's `--presets` flag (CLI) or "presets folder" field (GUI) at.
+  tracked by this repo's git history), one YAML file per source. `primary/` holds presets
+  that read an acquisition's own files (by platform: `iOS/`, `Android/`); `secondary/`
+  holds presets that read a tool's export (by tool: `AXIOM/`, `Cellebrite/`, `CDR/`).
+  This is the folder you point the mATLAS app's `--presets` flag (CLI) or "presets
+  folder" field (GUI) at.
 - **`AXIOM_model_parser/`** — kept as a local, *untracked* sibling folder (see
   `.gitignore`) for whoever maintains this checkout: a standalone utility that parses
   Magnet AXIOM artifact reference `.htm` files and generates *starter* preset YAML
@@ -21,7 +23,14 @@ sources, corrected field mappings, new tools) and are not tied to an app release
 ## Installing alongside the app
 
 The mATLAS app and this preset library are versioned and released independently.
-Clone them as siblings, e.g.:
+Clone them as siblings, cloning this repository into a folder named `presets`:
+
+```bash
+git clone https://github.com/Ben0x0a/mATLAS.git
+git clone https://github.com/Ben0x0a/mATLAS-presets.git presets
+```
+
+which gives:
 
 ```text
 some-folder/
@@ -29,6 +38,8 @@ some-folder/
 └── presets/           # this repo
     └── mATLAS-presets/
 ```
+
+Update the library with `git -C presets pull`.
 
 Then point the app at `presets/mATLAS-presets`:
 - **CLI:** `--presets` has no default — always pass it explicitly, e.g.
