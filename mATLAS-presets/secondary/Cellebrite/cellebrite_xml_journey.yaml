@@ -15,7 +15,11 @@ input_selector:
 source_record_uid: field(uuid)
 
 lookup_tables:
-  recovery: {Intact: intact, Deleted: deleted, Unknown: unknown}
+  # Cellebrite's own deleted_state -> our recovery_state (decision 48; the retired
+  # `deleted` field folded into this one). Intact = still in place; Deleted = a record
+  # Cellebrite reconstructed. Unknown maps to nothing, so the cell stays NULL: the
+  # export not saying is not the same as it saying 'live'.
+  recovery: {Intact: live, Deleted: recovered}
 
 expected_fields:
   - uuid
@@ -42,7 +46,7 @@ common:
   entity_type:     const(device)
   source_label:    const(Journey)
   raw_source_path: field(source_path)
-  deleted:         { from: field(deleted_state), pipe: "lookup(recovery, on_unknown=null)" }
+  recovery_state:  { from: field(deleted_state), pipe: "lookup(recovery, on_unknown=null)" }
 
 # A Journey fans out to two observations — origin at StartTime and destination at EndTime —
 # so each trip yields two output rows sharing the Journey's source_record_uid.
@@ -50,22 +54,24 @@ observations:
   - position:
       latitude:  field(FromPoint.Position.Latitude)
       longitude: field(FromPoint.Position.Longitude)
+      position_type:              const(coordinate)
       spatial_referential: const(epsg:4326)   # the datum for the coordinates above
     time:
       instant: field(StartTime)
       format:  iso8601
     links:
-      entity:   self
-      spatial:  at
-      temporal: once
+      entity:   subject
+      spatial:  measured
+      temporal: at_least_once
   - position:
       latitude:  field(ToPoint.Position.Latitude)
       longitude: field(ToPoint.Position.Longitude)
+      position_type:              const(coordinate)
       spatial_referential: const(epsg:4326)   # the datum for the coordinates above
     time:
       instant: field(EndTime)
       format:  iso8601
     links:
-      entity:   self
-      spatial:  at
-      temporal: once
+      entity:   subject
+      spatial:  measured
+      temporal: at_least_once

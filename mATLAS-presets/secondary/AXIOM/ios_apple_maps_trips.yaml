@@ -48,30 +48,34 @@ observations:
   - position:
       latitude:        'field("Origin Latitude")'
       longitude:       'field("Origin Longitude")'
+      position_type:              const(coordinate)
       spatial_referential: const(epsg:4326)   # the datum for the coordinates above
       raw_position:    'field("Origin Address")'
+      bearer_entity_type: const(poi)            # the searched place holds the position
     time:
       instant: 'field("Start Date/Time - * (dd.MM.yyyy)")'
       format:  "%d.%m.%Y %H:%M:%S.%f"
       zone:    { from: 'header("Start Date/Time - * (dd.MM.yyyy)")', pipe: "regex(tz, group=z)" }
     links:
-      entity:   searched_for
-      spatial:  references
-      temporal: once
+      entity:   party
+      spatial:  searched
+      temporal: at_least_once
 
   - position:
       latitude:        'field("Destination Latitude")'
       longitude:       'field("Destination Longitude")'
+      position_type:              const(coordinate)
       spatial_referential: const(epsg:4326)   # the datum for the coordinates above
       raw_position:    'field("Destination Address")'
+      bearer_entity_type: const(poi)            # the searched place holds the position
     time:
       instant: 'field("End Date/Time - * (dd.MM.yyyy)")'
       format:  "%d.%m.%Y %H:%M:%S.%f"
       zone:    { from: 'header("End Date/Time - * (dd.MM.yyyy)")', pipe: "regex(tz, group=z)" }
     links:
-      entity:   searched_for
-      spatial:  references
-      temporal: once
+      entity:   party
+      spatial:  searched
+      temporal: at_least_once
 
   - position:
     time:
@@ -79,6 +83,6 @@ observations:
       format:  "%d.%m.%Y %H:%M:%S.%f"
       zone:    { from: 'header("Record Date/Time - * (dd.MM.yyyy)")', pipe: "regex(tz, group=z)" }
     links:
+      # No position on this template, so no spatial link (decision 55).
       entity:   unknown
-      spatial:  unknown
-      temporal: once
+      temporal: at_least_once

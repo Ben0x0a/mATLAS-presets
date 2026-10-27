@@ -17,7 +17,11 @@ input_selector:
 source_record_uid: field(uuid)
 
 lookup_tables:
-  recovery: {Intact: intact, Deleted: deleted, Unknown: unknown}
+  # Cellebrite's own deleted_state -> our recovery_state (decision 48; the retired
+  # `deleted` field folded into this one). Intact = still in place; Deleted = a record
+  # Cellebrite reconstructed. Unknown maps to nothing, so the cell stays NULL: the
+  # export not saying is not the same as it saying 'live'.
+  recovery: {Intact: live, Deleted: recovered}
 
 # Inventory of the inline-flattened columns (1:1 modelField children appear as Parent.Child).
 # Present-but-unmapped columns are the research frontier (warnings sidecar).
@@ -48,12 +52,13 @@ common:
   entity_type:     const(device)
   source_label:    const(Location)
   raw_source_path: field(source_path)        # on-device source file, joined from extraInfos
-  deleted:         { from: field(deleted_state), pipe: "lookup(recovery, on_unknown=null)" }
+  recovery_state:  { from: field(deleted_state), pipe: "lookup(recovery, on_unknown=null)" }
 
 observations:
   - position:
       latitude:              field(Position.Latitude)         # required
       longitude:             field(Position.Longitude)        # required
+      position_type:              const(coordinate)
       spatial_referential:   const(epsg:4326)                 # the datum for the coordinates
       # Enrichments some schema versions omit — optional, so their absence yields a null
       # cell rather than disqualifying the preset.
@@ -62,8 +67,8 @@ observations:
     time:
       instant: field(TimeStamp)
       format:  iso8601        # zone-qualified values keep their offset; naive ones are
-                              # materialised as UTC with utc_offset_hours flagged "N/A".
+                              # materialised as UTC, the assumption stamped in the row's method (assume_utc).
     links:
-      entity:   self
-      spatial:  at
-      temporal: once
+      entity:   subject
+      spatial:  measured
+      temporal: at_least_once

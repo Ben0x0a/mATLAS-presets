@@ -14,7 +14,11 @@ input_selector:
 source_record_uid: field(uuid)
 
 lookup_tables:
-  recovery: {Intact: intact, Deleted: deleted, Unknown: unknown}
+  # Cellebrite's own deleted_state -> our recovery_state (decision 48; the retired
+  # `deleted` field folded into this one). Intact = still in place; Deleted = a record
+  # Cellebrite reconstructed. Unknown maps to nothing, so the cell stays NULL: the
+  # export not saying is not the same as it saying 'live'.
+  recovery: {Intact: live, Deleted: recovered}
 
 expected_fields:
   - uuid
@@ -40,7 +44,7 @@ common:
   source_label:    const(WirelessNetwork)
   position_source: const(wifi)
   raw_source_path: field(source_path)
-  deleted:         { from: field(deleted_state), pipe: "lookup(recovery, on_unknown=null)" }
+  recovery_state:  { from: field(deleted_state), pipe: "lookup(recovery, on_unknown=null)" }
 
 observations:
   # A network's geolocation is often absent (lat/lon null) — the row is still a temporal
@@ -48,12 +52,13 @@ observations:
   - position:
       latitude:              field(Position.Latitude)
       longitude:             field(Position.Longitude)
+      position_type:              const(coordinate)
       spatial_referential:   const(epsg:4326)                 # the datum for the coordinates
       horizontal_accuracy_m: { from: field(Position.GpsHorizontalAccuracy), unit: m, optional: true }
     time:
       instant: field(TimeStamp)
       format:  iso8601
     links:
-      entity:   self
-      spatial:  at
-      temporal: once
+      entity:   subject
+      spatial:  measured
+      temporal: at_least_once

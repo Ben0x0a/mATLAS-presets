@@ -34,7 +34,11 @@ expected_fields:
 patterns:
   tz: "(?P<z>UTC[+-]\\d{2}:\\d{2}(?:\\[DST\\])?)"   # the export timezone embedded in the header
 lookup_tables:
-  recovery: {Parsing: intact, Carving: recovered, Deleted: deleted}
+  # AXIOM's 'Recovery method' -> our recovery_state (decision 48). Parsing = read in
+  # place. Carving AND Deleted both mean AXIOM reconstructed the row rather than
+  # reading it in place, so both are `recovered` — previously 'Carving' was mapped
+  # into the `deleted` column, which put a recovery fact in a deletion field.
+  recovery: {Parsing: live, Carving: recovered, Deleted: recovered}
 
 source_record_uid: 'field("Item ID")'
 
@@ -45,12 +49,13 @@ common:
   position_source: const(GNSS)
   input_record_id:    field(Location)
   raw_source_path: field(Source)
-  deleted: { from: 'field("Recovery method")', pipe: "lookup(recovery, on_unknown=null)" }
+  recovery_state: { from: 'field("Recovery method")', pipe: "lookup(recovery, on_unknown=null)" }
 
 observations:
   - position:
       latitude:              field(Latitude)
       longitude:             field(Longitude)
+      position_type:              const(coordinate)
       spatial_referential:   const(epsg:4326)   # the datum for the coordinates
       altitude_m:            { from: 'field("Altitude (m)")', unit: m }
       horizontal_accuracy_m: { from: 'field("Accuracy (m)")', unit: m }
@@ -64,6 +69,6 @@ observations:
       format:  "%d.%m.%Y %H:%M:%S.%f"
       zone:    { from: 'header("Timestamp Date/Time - * (dd.MM.yyyy)")', pipe: "regex(tz, group=z)" }
     links:
-      entity:   self
-      spatial:  at
-      temporal: once
+      entity:   subject
+      spatial:  measured
+      temporal: at_least_once

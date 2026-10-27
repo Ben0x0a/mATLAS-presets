@@ -51,6 +51,7 @@ observations:
   - position:
       latitude:              field(Latitude)
       longitude:             field(Longitude)
+      position_type:              const(coordinate)
       spatial_referential:   const(epsg:4326)   # the datum for the coordinates
       horizontal_accuracy_m: { from: field(Accuracy), unit: m }
     time:
@@ -59,13 +60,13 @@ observations:
         upper: 'field("Vicinity Exit Date/Time")'
       format: "%d.%m.%Y %H:%M:%S.%f"
     links:
-      entity:   self
-      spatial:  at
-      temporal: continuous
-
+      entity:   subject
+      spatial:  measured
+      temporal: throughout
   - position:
       latitude:              field(Latitude)
       longitude:             field(Longitude)
+      position_type:              const(coordinate)
       spatial_referential:   const(epsg:4326)   # the datum for the coordinates
       horizontal_accuracy_m: { from: field(Accuracy), unit: m }
     time:
@@ -73,6 +74,6 @@ observations:
       format:  "%d.%m.%Y %H:%M:%S.%f"
       zone:    { from: 'header("Created Date/Time - * (dd.MM.yyyy)")', pipe: "regex(tz, group=z)" }
     links:
-      entity:   self
-      spatial:  at
-      temporal: once
+      entity:   subject
+      spatial:  measured
+      temporal: at_least_once

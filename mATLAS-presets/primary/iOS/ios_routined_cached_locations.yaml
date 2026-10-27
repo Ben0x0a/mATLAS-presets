@@ -49,6 +49,7 @@ observations:
   - position:
       latitude:                       field(ZLATITUDE)
       longitude:                      field(ZLONGITUDE)
+      position_type:              const(coordinate)
       spatial_referential:            const(epsg:4326)   # the datum for the coordinates
       altitude_m:                     { from: field(ZALTITUDE), unit: m }
       horizontal_accuracy_m:          { from: field(ZHORIZONTALACCURACY), unit: m }
@@ -61,6 +62,6 @@ observations:
       epoch:   cocoa
       zone:    const(UTC)
     links:
-      entity:   self
-      spatial:  at
-      temporal: once
+      entity:   subject
+      spatial:  measured
+      temporal: at_least_once

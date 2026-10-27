@@ -65,24 +65,20 @@ common:
   # A tool export: the row's origin is the operator file the extraction came from.
   raw_source_path: field(SourceFile)
   input_record_id: format("{field(SourceFile)}:{field(SourceRow)}")
-  # activity_kind is what CREATES the record's activity row; without it the context entries
-  # below have nowhere to live and are silently dropped.
-  activity_kind:   const(observation)
-  context.antenna: format("{field(GlobalCellID)}")
+  # The serving antenna is the POSITION BEARER (decisions 51, 55): the record states the
+  # ANTENNA's position and the phone's link to it — the phone is a `party`, the antenna
+  # holds the position, and the phone was `served` by it.
+  bearer_entity:          field(GlobalCellID)
+  bearer_entity_type:     const(antenna)
+  bearer_identifier_type: const(cell)
 
 observations:
   - position:
       latitude:                       field(Latitude)
       longitude:                      field(Longitude)
+      position_type:              const(coordinate)
       spatial_referential:            const(epsg:4326)
       beam_azimuth_deg:               { from: field(Beam), unit: deg }
-      # A zero-duration event is a single point in the interval; anything else was connected
-      # throughout the call. `instant` is no longer an occupancy member — an instant is the
-      # degenerate interval where "always" and "at some point" coincide — so both branches
-      # are honest quantifiers. Written as the full column name because the short `links:`
-      # block takes bare enum tokens only.
-      occupancy: if field(Duration) == 0 then const(once)
-                 else const(continuous)
     time:
       interval:
         lower:        field(TimeStamp)
@@ -92,5 +88,9 @@ observations:
       format:              "%Y-%m-%d %H:%M:%S"
       zone:                const(Europe/Zurich)
     links:
-      entity:   served_by
-      spatial:  near
+      # The leg records that the antenna served the phone at some point of the call, not that
+      # it did for its whole duration: handovers are not recorded, so `throughout` would
+      # overstate (decision 55).
+      entity:   party
+      spatial:  served
+      temporal: at_least_once
