@@ -22,31 +22,33 @@ sources, corrected field mappings, new tools) and are not tied to an app release
 
 ## Installing alongside the app
 
-The mATLAS app and this preset library are versioned and released independently.
-Clone them as siblings, cloning this repository into a folder named `presets`:
+The mATLAS app and this preset library are versioned independently. The app includes this
+repository as its `presets/` **git submodule**, pinned to the presets commit each app version
+was tested with, so cloning the app with its submodules is all it takes:
 
 ```bash
-git clone https://github.com/Ben0x0a/mATLAS.git
-git clone https://github.com/Ben0x0a/mATLAS-presets.git presets
+git clone --recurse-submodules https://github.com/Ben0x0a/mATLAS.git
 ```
 
-which gives:
-
 ```text
-some-folder/
-├── mATLAS/            # the app (or its packaged executable)
-└── presets/           # this repo
+mATLAS/                # the app
+└── presets/           # this repository (submodule)
     └── mATLAS-presets/
 ```
 
-Update the library with `git -C presets pull`.
+From the `mATLAS/` folder:
+- **fetch the pinned presets** (if the app was cloned without them): `git submodule update --init`;
+- **move to the newest presets**, off the tested pin: `git submodule update --remote presets`.
 
 Then point the app at `presets/mATLAS-presets`:
-- **CLI:** `--presets` has no default — always pass it explicitly, e.g.
-  `--presets ../presets/mATLAS-presets`.
+- **CLI:** `--presets` has no default — pass it explicitly: `--presets presets/mATLAS-presets`.
 - **GUI:** the presets folder field defaults to `<current folder>/presets/mATLAS-presets`,
-  so placing this repo as `presets/` next to the app (or its working directory) is picked
-  up automatically; otherwise browse to it.
+  which is the submodule when the GUI is launched from the `mATLAS/` folder; otherwise
+  browse to it.
+
+This repository can also be cloned on its own
+(`git clone https://github.com/Ben0x0a/mATLAS-presets.git presets`) and passed with
+`--presets <path>/presets/mATLAS-presets`.
 
 ## A preset is not automatically correct for your data
 
